@@ -1,0 +1,1231 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>GRROX · Admin Console</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #f4f7fc;
+            --surface: #fff;
+            --ink: #17233b;
+            --muted: #7c879c;
+            --line: #e8edf5;
+            --blue: #2864f0;
+            --violet: #7657f6;
+            --nav: #111a32;
+            --green: #159b72;
+            --red: #df4b5b;
+            --shadow: 0 12px 34px rgba(30, 50, 90, .07)
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif
+        }
+
+        button,
+        input,
+        select {
+            font: inherit
+        }
+
+        button {
+            cursor: pointer;
+            border: 0
+        }
+
+        .layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 252px minmax(0, 1fr)
+        }
+
+        aside {
+            background: linear-gradient(180deg, #111a32, #182746);
+            color: #fff;
+            padding: 24px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 10px
+        }
+
+        .brandmark {
+            width: 39px;
+            height: 39px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #3478ff, #9165ff);
+            display: grid;
+            place-items: center;
+            font-size: 17px;
+            font-weight: 900;
+            box-shadow: 0 8px 20px #2864f055
+        }
+
+        .brand strong {
+            font-size: 19px;
+            letter-spacing: .4px
+        }
+
+        .brand small {
+            display: block;
+            color: #9dacc8;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            margin-top: 1px
+        }
+
+        .nav-label {
+            padding: 0 12px;
+            color: #8190ad;
+            font-size: 10px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            margin: 4px 0 9px
+        }
+
+        .nav {
+            display: grid;
+            gap: 5px
+        }
+
+        .nav button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            padding: 11px 12px;
+            border-radius: 11px;
+            background: transparent;
+            color: #b7c2d8;
+            transition: .18s
+        }
+
+        .nav button:hover {
+            background: #ffffff10;
+            color: white
+        }
+
+        .nav button.active {
+            color: #fff;
+            background: linear-gradient(100deg, #2864f0, #6b57ed);
+            box-shadow: 0 8px 20px #2f5ce933
+        }
+
+        .nav svg {
+            width: 17px;
+            height: 17px
+        }
+
+        .nav .soon {
+            margin-left: auto;
+            border: 1px solid #52617e;
+            border-radius: 5px;
+            padding: 1px 4px;
+            font-size: 9px;
+            color: #9aa8c2
+        }
+
+        .aside-bottom {
+            margin-top: auto;
+            padding: 15px 12px;
+            border: 1px solid #ffffff1a;
+            border-radius: 14px;
+            color: #aebbd2;
+            font-size: 12px
+        }
+
+        .aside-bottom strong {
+            color: white;
+            display: block;
+            margin-bottom: 4px
+        }
+
+        .main {
+            min-width: 0
+        }
+
+        .topbar {
+            height: 78px;
+            background: #ffffffd9;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 5
+        }
+
+        .crumb {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .crumb b {
+            color: var(--ink)
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .db-pill {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: white;
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #f0ae35
+        }
+
+        .db-pill.ok .dot {
+            background: #19ad7c
+        }
+
+        .iconbtn {
+            width: 37px;
+            height: 37px;
+            display: grid;
+            place-items: center;
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            color: #53627c
+        }
+
+        .iconbtn svg {
+            width: 17px
+        }
+
+        .avatar {
+            width: 37px;
+            height: 37px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: #e9edff;
+            color: #4b54c9;
+            font-weight: 800
+        }
+
+        .content {
+            padding: 28px 32px 40px;
+            max-width: 1600px;
+            margin: auto
+        }
+
+        .heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 18px;
+            margin-bottom: 23px
+        }
+
+        .heading h1 {
+            font-size: 27px;
+            line-height: 1.2;
+            margin: 0 0 7px;
+            letter-spacing: -.8px
+        }
+
+        .heading p {
+            color: var(--muted);
+            margin: 0
+        }
+
+        .eyebrow {
+            color: var(--blue);
+            font-weight: 800;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            margin-bottom: 8px
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 13px;
+            border-radius: 10px;
+            background: var(--blue);
+            color: #fff;
+            font-weight: 650;
+            box-shadow: 0 5px 13px #2864f026
+        }
+
+        .btn svg {
+            width: 15px;
+            height: 15px
+        }
+
+        .btn.secondary {
+            background: #fff;
+            color: #46536d;
+            border: 1px solid var(--line);
+            box-shadow: none
+        }
+
+        .btn.danger {
+            background: #fff0f1;
+            color: var(--red);
+            box-shadow: none
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 19px
+        }
+
+        .stat {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            min-width: 0
+        }
+
+        .stat-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 12px
+        }
+
+        .stat-icon {
+            width: 37px;
+            height: 37px;
+            border-radius: 12px;
+            background: #edf2ff;
+            color: var(--blue);
+            display: grid;
+            place-items: center
+        }
+
+        .stat-icon svg {
+            width: 18px
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 15px 0 5px
+        }
+
+        .stat-note {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(280px, .8fr);
+            gap: 18px
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 18px
+        }
+
+        .panel-head {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px
+        }
+
+        .panel-head h2 {
+            font-size: 15px;
+            margin: 0
+        }
+
+        .panel-head p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .panel-body {
+            padding: 18px 20px
+        }
+
+        .table-tools {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .search {
+            position: relative;
+            min-width: 190px
+        }
+
+        .search svg {
+            position: absolute;
+            left: 11px;
+            top: 11px;
+            width: 15px;
+            color: #9aa5b7
+        }
+
+        .search input {
+            width: 100%;
+            padding: 10px 12px 10px 34px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            outline: none
+        }
+
+        .search input:focus {
+            border-color: #9cb8ff;
+            box-shadow: 0 0 0 3px #2864f012
+        }
+
+        .select {
+            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: #fff;
+            color: #526079
+        }
+
+        .table-wrap {
+            overflow: auto
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap
+        }
+
+        th {
+            text-align: left;
+            color: #8a95a9;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            font-weight: 800;
+            background: #fbfcff
+        }
+
+        th,
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #edf1f7
+        }
+
+        td {
+            font-size: 12px;
+            color: #46536b
+        }
+
+        td strong {
+            color: #1c2a44;
+            font-size: 12px
+        }
+
+        .person {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .mini-avatar {
+            width: 33px;
+            height: 33px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: #edf2ff;
+            color: #4364d8;
+            font-weight: 800
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 7px;
+            padding: 5px 8px;
+            background: #f0f3f9;
+            color: #69768e;
+            font-size: 10px;
+            font-weight: 750
+        }
+
+        .badge.green {
+            background: #e6f8f1;
+            color: #11835f
+        }
+
+        .badge.yellow {
+            background: #fff5dc;
+            color: #9b6b00
+        }
+
+        .badge.red {
+            background: #ffedf0;
+            color: #bf3548
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px
+        }
+
+        .smallbtn {
+            padding: 7px 9px;
+            border-radius: 8px;
+            background: #edf2ff;
+            color: #345bd3;
+            font-size: 11px;
+            font-weight: 700
+        }
+
+        .smallbtn.red {
+            background: #fff0f1;
+            color: #c53e4f
+        }
+
+        .empty {
+            padding: 34px 20px;
+            text-align: center;
+            color: var(--muted)
+        }
+
+        .empty svg {
+            width: 30px;
+            height: 30px;
+            color: #aeb9cc;
+            margin-bottom: 8px
+        }
+
+        .empty strong {
+            display: block;
+            color: #3b4860;
+            margin-bottom: 4px
+        }
+
+        .barlist {
+            display: grid;
+            gap: 18px
+        }
+
+        .barrow {
+            display: grid;
+            grid-template-columns: 105px 1fr 35px;
+            gap: 12px;
+            align-items: center;
+            font-size: 12px
+        }
+
+        .bartrack {
+            height: 8px;
+            border-radius: 20px;
+            background: #edf1f8;
+            overflow: hidden
+        }
+
+        .barfill {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #2c71f5, #8964f8)
+        }
+
+        .activity {
+            display: grid;
+            gap: 0
+        }
+
+        .activity-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px 0;
+            border-bottom: 1px solid #edf1f7
+        }
+
+        .activity-row:last-child {
+            border: 0
+        }
+
+        .activity-icon {
+            width: 33px;
+            height: 33px;
+            border-radius: 10px;
+            background: #eef3ff;
+            color: #4b6ce0;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0
+        }
+
+        .activity-icon svg {
+            width: 15px
+        }
+
+        .activity-row strong {
+            font-size: 12px;
+            display: block
+        }
+
+        .activity-row small {
+            color: var(--muted);
+            font-size: 11px
+        }
+
+        .module-note {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            background: linear-gradient(135deg, #eef4ff, #f6f2ff);
+            border: 1px solid #e2e8ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 18px
+        }
+
+        .module-note>svg {
+            width: 22px;
+            height: 22px;
+            color: var(--blue);
+            flex-shrink: 0
+        }
+
+        .module-note h3 {
+            margin: 0 0 5px;
+            font-size: 14px
+        }
+
+        .module-note p {
+            margin: 0;
+            color: #66738e;
+            font-size: 12px;
+            line-height: 1.7
+        }
+
+        .module-note code {
+            background: #fff;
+            border: 1px solid #dfe6f8;
+            padding: 2px 5px;
+            border-radius: 5px
+        }
+
+        .notice {
+            padding: 11px 13px;
+            background: #fff8e6;
+            border: 1px solid #f7e4b0;
+            border-radius: 10px;
+            color: #8c6916;
+            font-size: 12px;
+            margin-bottom: 18px
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            background: #17233b;
+            color: #fff;
+            border-radius: 12px;
+            padding: 13px 17px;
+            box-shadow: 0 15px 35px #0c173444;
+            z-index: 20;
+            max-width: 360px
+        }
+
+        .login-wrap {
+            max-width: 430px;
+            margin: 8vh auto;
+            padding: 0 18px
+        }
+
+        .login-card {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 20px 60px #18284912
+        }
+
+        .login-card h1 {
+            margin: 18px 0 8px;
+            font-size: 25px
+        }
+
+        .login-card p {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 0 0 24px
+        }
+
+        .field {
+            display: grid;
+            gap: 7px;
+            margin-bottom: 15px
+        }
+
+        .field label {
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            outline: none
+        }
+
+        .field input:focus {
+            border-color: #9cb8ff
+        }
+
+        .login-card .btn {
+            width: 100%;
+            justify-content: center;
+            padding: 12px
+        }
+
+        .login-help {
+            margin-top: 16px;
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.7
+        }
+
+        .mobile-menu {
+            display: none
+        }
+
+        @media(max-width:1100px) {
+            .layout {
+                grid-template-columns: 215px minmax(0, 1fr)
+            }
+
+            .content {
+                padding: 23px 20px
+            }
+
+            .topbar {
+                padding: 0 20px
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+
+            .grid2 {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @media(max-width:760px) {
+            .layout {
+                display: block
+            }
+
+            aside {
+                position: fixed;
+                left: -270px;
+                top: 0;
+                bottom: 0;
+                width: 252px;
+                z-index: 15;
+                transition: left .2s;
+                box-shadow: 20px 0 60px #07132a55
+            }
+
+            aside.open {
+                left: 0
+            }
+
+            .mobile-menu {
+                display: grid
+            }
+
+            .topbar {
+                height: 66px;
+                padding: 0 14px
+            }
+
+            .content {
+                padding: 20px 13px
+            }
+
+            .heading {
+                align-items: flex-start
+            }
+
+            .heading h1 {
+                font-size: 23px
+            }
+
+            .db-pill {
+                display: none
+            }
+
+            .stats {
+                gap: 10px
+            }
+
+            .stat {
+                padding: 14px
+            }
+
+            .stat-value {
+                font-size: 25px
+            }
+
+            .stat-head {
+                align-items: flex-start;
+                gap: 5px
+            }
+
+            .stat-icon {
+                width: 31px;
+                height: 31px
+            }
+
+            .panel-head,
+            .panel-body {
+                padding: 15px
+            }
+
+            .grid2 {
+                display: block
+            }
+
+            .barrow {
+                grid-template-columns: 83px 1fr 25px;
+                gap: 8px
+            }
+
+            .heading .btn {
+                padding: 9px;
+                font-size: 12px
+            }
+
+            .heading .btn span {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loginScreen" class="login-wrap">
+        <div class="login-card">
+            <div class="brand" style="padding:0;color:var(--ink)">
+                <div class="brandmark">G</div>
+                <div><strong>GRROX</strong><small style="color:#7c879c">ADMIN CONSOLE</small></div>
+            </div>
+            <h1>Welcome back.</h1>
+            <p>Sign in to manage your GRROX platform data.</p>
+            <form id="loginForm">
+                <div class="field"><label for="adminKey">Admin key</label><input id="adminKey" type="password"
+                        autocomplete="current-password" placeholder="Enter your server ADMIN_KEY" required></div><button
+                    class="btn" type="submit"><i data-lucide="shield-check"></i> Secure sign in</button>
+            </form>
+            <div class="login-help">This console connects to your existing GRROX backend. It does not use demo
+                customers, businesses, or deals. Your admin key stays in this browser session and is sent only to the
+                configured GRROX API.</div>
+            <div id="loginError" class="notice hidden" style="margin-top:15px;margin-bottom:0"></div>
+        </div>
+    </div>
+    <div id="app" class="layout hidden">
+        <aside id="sidebar">
+            <div class="brand">
+                <div class="brandmark">G</div>
+                <div><strong>GRROX</strong><small>ADMIN CONSOLE</small></div>
+            </div>
+            <div>
+                <div class="nav-label">Workspace</div>
+                <nav class="nav" id="nav">
+                    <button class="active" data-page="dashboard"><i
+                            data-lucide="layout-dashboard"></i>Dashboard</button>
+                    <button data-page="customers"><i data-lucide="users"></i>Customers</button>
+                    <button data-page="businesses"><i data-lucide="store"></i>Businesses</button>
+                    <button data-page="deals"><i data-lucide="badge-percent"></i>Deals & Offers</button>
+                    <button data-page="services"><i data-lucide="wrench"></i>Local Services<span class="soon">API
+                            NEEDED</span></button>
+                    <button data-page="categories"><i data-lucide="grid-2x2"></i>Categories<span class="soon">API
+                            NEEDED</span></button>
+                    <button data-page="reports"><i data-lucide="flag"></i>Reports<span class="soon">API
+                            NEEDED</span></button>
+                    <button data-page="notifications"><i data-lucide="bell"></i>Notifications<span class="soon">API
+                            NEEDED</span></button>
+                    <button data-page="analytics"><i data-lucide="chart-no-axes-combined"></i>Analytics</button>
+                    <button data-page="revenue"><i data-lucide="wallet"></i>Revenue & Payments<span class="soon">API
+                            NEEDED</span></button>
+                    <button data-page="admins"><i data-lucide="shield"></i>Admin Permissions<span class="soon">API
+                            NEEDED</span></button>
+                    <button data-page="settings"><i data-lucide="settings-2"></i>Settings<span class="soon">API
+                            NEEDED</span></button>
+                    <button data-page="logs"><i data-lucide="history"></i>Audit Logs<span class="soon">API
+                            NEEDED</span></button>
+                </nav>
+            </div>
+            <div class="aside-bottom"><strong><i data-lucide="database"
+                        style="width:14px;vertical-align:middle;margin-right:5px"></i>Live GRROX data</strong><span
+                    id="sideStatus">Waiting for database…</span></div>
+        </aside>
+        <div class="main">
+            <header class="topbar">
+                <div style="display:flex;align-items:center;gap:12px"><button class="iconbtn mobile-menu" id="menuBtn"
+                        aria-label="Open menu"><i data-lucide="menu"></i></button>
+                    <div class="crumb">GRROX <span style="margin:0 7px">/</span><b id="crumb">Dashboard</b></div>
+                </div>
+                <div class="top-actions">
+                    <div class="db-pill" id="dbPill"><span class="dot"></span><span id="dbText">Checking
+                            connection</span></div><button class="iconbtn" id="refreshBtn" title="Refresh live data"><i
+                            data-lucide="refresh-cw"></i></button>
+                    <div class="avatar">G</div><button class="iconbtn" id="logoutBtn" title="Log out"><i
+                            data-lucide="log-out"></i></button>
+                </div>
+            </header>
+            <main class="content">
+                <section id="page-dashboard" class="page">
+                    <div class="heading">
+                        <div>
+                            <div class="eyebrow">Your platform at a glance</div>
+                            <h1>Dashboard overview</h1>
+                            <p>Real counts from your GRROX database — refreshed from your backend.</p>
+                        </div><button class="btn secondary" id="refreshOverview"><i data-lucide="refresh-cw"></i>
+                            Refresh data</button>
+                    </div>
+                    <div id="stats" class="stats">
+                        <div class="stat">
+                            <div class="muted">Loading GRROX data…</div>
+                        </div>
+                    </div>
+                    <div class="grid2">
+                        <div class="panel">
+                            <div class="panel-head">
+                                <div>
+                                    <h2>Platform inventory</h2>
+                                    <p>Current records returned by the live API</p>
+                                </div><span class="badge green">Live API</span>
+                            </div>
+                            <div class="panel-body">
+                                <div id="inventoryBars" class="barlist"></div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-head">
+                                <div>
+                                    <h2>Data connection</h2>
+                                    <p>Current backend status</p>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div id="connectionDetails" class="activity"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <h2>Latest businesses</h2>
+                                <p>Most recently registered businesses in GRROX</p>
+                            </div><button class="btn secondary" data-goto="businesses">View all <i
+                                    data-lucide="arrow-right"></i></button>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Business</th>
+                                        <th>Area</th>
+                                        <th>Phone</th>
+                                        <th>Verification</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="latestBusinesses"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="page-customers" class="page hidden">
+                    <div class="heading">
+                        <div>
+                            <div class="eyebrow">People using GRROX</div>
+                            <h1>Customers</h1>
+                            <p>Customer records fetched from your database.</p>
+                        </div><button class="btn secondary" data-export="customers"><i data-lucide="download"></i>
+                            Export CSV</button>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <h2>All customers</h2>
+                                <p>Latest records first · phone numbers are shown as stored in your database</p>
+                            </div>
+                            <div class="table-tools">
+                                <div class="search"><i data-lucide="search"></i><input id="customerSearch"
+                                        placeholder="Search name, mobile, GRROX ID"></div>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>GRROX ID</th>
+                                        <th>Mobile</th>
+                                        <th>Area</th>
+                                        <th>Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customerRows"></tbody>
+                            </table>
+                        </div>
+                        <div id="customerEmpty" class="empty hidden">No customer records returned by the API.</div>
+                    </div>
+                </section>
+                <section id="page-businesses" class="page hidden">
+                    <div class="heading">
+                        <div>
+                            <div class="eyebrow">Local partners</div>
+                            <h1>Businesses</h1>
+                            <p>Manage business records registered on GRROX Jaipur.</p>
+                        </div><button class="btn secondary" data-export="businesses"><i data-lucide="download"></i>
+                            Export CSV</button>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <h2>Business directory</h2>
+                                <p>Verification changes are saved through your existing backend endpoint.</p>
+                            </div>
+                            <div class="table-tools">
+                                <div class="search"><i data-lucide="search"></i><input id="businessSearch"
+                                        placeholder="Search business, area, phone"></div><select id="businessFilter"
+                                    class="select">
+                                    <option value="all">All statuses</option>
+                                    <option value="Verified">Verified</option>
+                                    <option value="Unverified">Unverified</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Business</th>
+                                        <th>Owner</th>
+                                        <th>Category</th>
+                                        <th>Area / PIN</th>
+                                        <th>Phone</th>
+                                        <th>Shop</th>
+                                        <th>Verification</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="businessRows"></tbody>
+                            </table>
+                        </div>
+                        <div id="businessEmpty" class="empty hidden">No business records returned by the API.</div>
+                    </div>
+                </section>
+                <section id="page-deals" class="page hidden">
+                    <div class="heading">
+                        <div>
+                            <div class="eyebrow">Offers published on GRROX</div>
+                            <h1>Deals & offers</h1>
+                            <p>Actual products/deals stored in your GRROX database.</p>
+                        </div><button class="btn secondary" data-export="deals"><i data-lucide="download"></i> Export
+                            CSV</button>
+                    </div>
+                    <div class="notice">Deleting a deal removes it from the database. This action cannot be undone.
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <h2>All deals</h2>
+                                <p>Deal images are not downloaded in this table to keep it fast.</p>
+                            </div>
+                            <div class="table-tools">
+                                <div class="search"><i data-lucide="search"></i><input id="dealSearch"
+                                        placeholder="Search deal, shop, category"></div>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Deal</th>
+                                        <th>Shop</th>
+                                        <th>Category</th>
+                                        <th>Price</th>
+                                        <th>Views</th>
+                                        <th>Claims</th>
+                                        <th>Created</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dealRows"></tbody>
+                            </table>
+                        </div>
+                        <div id="dealEmpty" class="empty hidden">No deal records returned by the API.</div>
+                    </div>
+                </section>
+                <section id="page-analytics" class="page hidden">
+                    <div class="heading">
+                        <div>
+                            <div class="eyebrow">Measured from available records</div>
+                            <h1>Analytics</h1>
+                            <p>Only metrics supported by your current backend are shown here.</p>
+                        </div><button class="btn secondary" data-export="deals"><i data-lucide="download"></i> Export
+                            deals</button>
+                    </div>
+                    <div id="analyticsStats" class="stats"></div>
+                    <div class="grid2">
+                        <div class="panel">
+                            <div class="panel-head">
+                                <div>
+                                    <h2>Deal engagement</h2>
+                                    <p>Total views and claims stored on deal records</p>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div id="engagementBars" class="barlist"></div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-head">
+                                <div>
+                                    <h2>Business verification</h2>
+                                    <p>Based on saved business status</p>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div id="verificationBars" class="barlist"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notice">Unique visitors, click-through rate, daily visitor charts, sales revenue, and
+                        conversion rates are not calculated because the current API does not expose those event/payment
+                        records.</div>
+                </section>
+                <section id="page-services" class="page hidden"></section>
+                <section id="page-categories" class="page hidden"></section>
+                <section id="page-reports" class="page hidden"></section>
+                <section id="page-notifications" class="page hidden"></section>
+                <section id="page-revenue" class="page hidden"></section>
+                <section id="page-admins" class="page hidden"></section>
+                <section id="page-settings" class="page hidden"></section>
+                <section id="page-logs" class="page hidden"></section>
+            </main>
+        </div>
+    </div>
+    <div id="toast" class="toast hidden"></div>
+    <script>
+        (() => {
+            const API = window.GRROX_API || ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '5000' ? location.origin : 'https://new-grox.onrender.com');
+            const $ = id => document.getElementById(id);
+            const state = { businesses: [], customers: [], deals: [], stats: null };
+            const names = { dashboard: 'Dashboard', customers: 'Customers', businesses: 'Businesses', 'deals': 'Deals & Offers', services: 'Local Services', categories: 'Categories', reports: 'Reports & Complaints', notifications: 'Notifications', analytics: 'Analytics', revenue: 'Revenue & Payments', admins: 'Admin Permissions', settings: 'Settings', logs: 'Audit Logs' };
+            const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const date = v => { if (!v) return '—'; const d = new Date(v); return isNaN(d) ? '—' : d.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }); };
+            const money = v => '₹' + Number(v || 0).toLocaleString('en-IN');
+            const token = () => sessionStorage.getItem('grroxAdmin');
+            let toastTimer;
+            function toast(msg) { $('toast').textContent = msg; $('toast').classList.remove('hidden'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.add('hidden'), 3600) }
+            async function api(path, options = {}) {
+                const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+                if (token()) headers.Authorization = 'Bearer ' + token();
+                let response;
+                try { response = await fetch(API + '/api/admin' + path, { ...options, headers }); }
+                catch (e) { throw new Error('Cannot reach GRROX API at ' + API + '. Check your internet or backend status.'); }
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) { if (response.status === 401 && token()) { sessionStorage.removeItem('grroxAdmin'); showLogin('Your admin session expired. Sign in again.'); } throw new Error(data.message || ('API error ' + response.status)); }
+                return data;
+            }
+            function showLogin(error = '') { $('app').classList.add('hidden'); $('loginScreen').classList.remove('hidden'); $('loginError').textContent = error; $('loginError').classList.toggle('hidden', !error); }
+            function showApp() { $('loginScreen').classList.add('hidden'); $('app').classList.remove('hidden'); }
+            $('loginForm').addEventListener('submit', async e => { e.preventDefault(); $('loginError').classList.add('hidden'); try { const d = await fetch(API + '/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: $('adminKey').value }) }); const result = await d.json().catch(() => ({})); if (!d.ok) throw new Error(result.message || 'Login failed'); sessionStorage.setItem('grroxAdmin', result.token); $('adminKey').value = ''; showApp(); await loadAll(); } catch (err) { $('loginError').textContent = err.message; $('loginError').classList.remove('hidden'); } });
+            $('logoutBtn').addEventListener('click', () => { sessionStorage.removeItem('grroxAdmin'); state.businesses = []; state.customers = []; state.deals = []; showLogin(); });
+            $('refreshBtn').addEventListener('click', loadAll); $('refreshOverview').addEventListener('click', loadAll);
+            $('menuBtn').addEventListener('click', () => $('sidebar').classList.toggle('open'));
+            document.querySelectorAll('#nav button').forEach(b => b.addEventListener('click', () => navigate(b.dataset.page)));
+            document.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => navigate(b.dataset.goto)));
+            function navigate(page) { document.querySelectorAll('.page').forEach(p => p.classList.add('hidden')); $('page-' + page).classList.remove('hidden'); document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page)); $('crumb').textContent = names[page] || page; $('sidebar').classList.remove('open'); if (['services', 'categories', 'reports', 'notifications', 'revenue', 'admins', 'settings', 'logs'].includes(page)) showNotConnected(page); if (page === 'analytics') renderAnalytics(); }
+            function showNotConnected(page) { const descriptions = { services: 'The current GRROX backend does not expose an admin API for listing or moderating service providers.', categories: 'The current backend does not expose a persistent category-management API.', reports: 'No report/complaint model or admin API is present in the repository version checked.', notifications: 'A notification delivery/history API is not present in the current backend.', revenue: 'The current backend does not expose payment transactions or platform revenue records.', admins: 'The backend supports a single ADMIN_KEY login. Multi-admin accounts and role permissions are not implemented.', settings: 'Platform settings are not exposed through a persistent admin settings API yet.', logs: 'The backend does not currently store admin audit-log records.' }; $('page-' + page).innerHTML = `<div class="heading"><div><div class="eyebrow">GRROX admin module</div><h1>${esc(names[page])}</h1><p>This section is reserved for GRROX-specific functionality.</p></div></div><div class="module-note"><i data-lucide="database"></i><div><h3>Backend connection required</h3><p>${esc(descriptions[page])}<br><br><b>No sample data is shown here.</b> To make this module functional, the corresponding protected API and database model must be added to your existing GRROX backend first.</p></div></div>`; if (window.lucide) lucide.createIcons(); }
+            async function loadAll() { if (!token()) return; $('dbText').textContent = 'Connecting…'; $('dbPill').classList.remove('ok'); $('sideStatus').textContent = 'Loading live data…'; try { const [stats, businesses, deals, customers] = await Promise.all([api('/stats'), api('/businesses'), api('/deals'), api('/customers')]); state.stats = stats; state.businesses = businesses.businesses || []; state.deals = deals.products || []; state.customers = customers.customers || []; showApp(); $('dbText').textContent = 'API connected'; $('dbPill').classList.add('ok'); $('sideStatus').textContent = 'Connected · records from MongoDB API'; renderAll(); } catch (err) { $('dbText').textContent = 'Connection issue'; $('sideStatus').textContent = 'Could not load data'; toast(err.message); $('connectionDetails').innerHTML = `<div class="activity-row"><div class="activity-icon"><i data-lucide="alert-triangle"></i></div><div><strong>Live API request failed</strong><small>${esc(err.message)}</small></div></div>`; if (window.lucide) lucide.createIcons(); } }
+            function statCard(label, value, icon, note) { return `<div class="stat"><div class="stat-head"><span>${esc(label)}</span><span class="stat-icon"><i data-lucide="${icon}"></i></span></div><div class="stat-value">${Number(value || 0).toLocaleString('en-IN')}</div><div class="stat-note">${esc(note)}</div></div>`; }
+            function renderAll() { const s = state.stats || {}; $('stats').innerHTML = statCard('Registered customers', s.customers, 'users', 'Database count') + statCard('Businesses', s.businesses, 'store', 'Database count') + statCard('Deals & offers', s.deals, 'badge-percent', 'Database count') + statCard('Deal claims', s.claims, 'ticket-check', 'Recorded claim records'); const max = Math.max(1, s.customers || 0, s.businesses || 0, s.deals || 0, s.claims || 0); $('inventoryBars').innerHTML = [['Customers', s.customers], ['Businesses', s.businesses], ['Deals', s.deals], ['Claims', s.claims]].map(([n, v]) => `<div class="barrow"><span>${n}</span><div class="bartrack"><div class="barfill" style="width:${Math.max(0, Math.min(100, (Number(v || 0) / max) * 100))}%"></div></div><b>${Number(v || 0).toLocaleString('en-IN')}</b></div>`).join(''); $('connectionDetails').innerHTML = [['check-circle-2', 'Admin authentication', 'Signed in with the protected admin API'], ['database', 'Database-backed records', `${state.businesses.length} businesses · ${state.customers.length} customers · ${state.deals.length} deals loaded in lists`], ['clock-3', 'Last refreshed', new Date().toLocaleTimeString()]].map(([i, t, d]) => `<div class="activity-row"><div class="activity-icon"><i data-lucide="${i}"></i></div><div><strong>${esc(t)}</strong><small>${esc(d)}</small></div></div>`).join(''); $('latestBusinesses').innerHTML = state.businesses.slice(0, 6).map(b => `<tr><td><div class="person"><div class="mini-avatar">${esc((b.businessName || 'B').slice(0, 1).toUpperCase())}</div><div><strong>${esc(b.businessName || 'Unnamed business')}</strong><div class="muted">${esc(b.category || 'Category not set')}</div></div></div></td><td>${esc(b.area || '—')}</td><td>${esc(b.mobile || '—')}</td><td>${badge(b.verificationStatus)}</td><td>${date(b.createdAt)}</td></tr>`).join('') || `<tr><td colspan="5" class="empty">No business records returned by the API.</td></tr>`; renderCustomers(); renderBusinesses(); renderDeals(); renderAnalytics(); if (window.lucide) lucide.createIcons(); }
+            function badge(status) { const s = String(status || 'Unknown'); let c = ''; if (s.toLowerCase() === 'verified' || s.toLowerCase() === 'open' || s.toLowerCase() === 'active') c = 'green'; else if (s.toLowerCase() === 'unverified' || s.toLowerCase() === 'pending') c = 'yellow'; else if (s.toLowerCase() === 'closed' || s.toLowerCase() === 'blocked') c = 'red'; return `<span class="badge ${c}">${esc(s)}</span>`; }
+            function renderCustomers() { const q = ($('customerSearch')?.value || '').toLowerCase(); const rows = state.customers.filter(c => [c.name, c.mobile, c.grroxId, c.area].some(v => String(v || '').toLowerCase().includes(q))); $('customerRows').innerHTML = rows.map(c => `<tr><td><div class="person"><div class="mini-avatar">${esc((c.name || 'C').slice(0, 1).toUpperCase())}</div><div><strong>${esc(c.name || 'Profile not completed')}</strong><div class="muted">${esc(c.email || '')}</div></div></div></td><td>${esc(c.grroxId || '—')}</td><td>${esc(c.mobile || '—')}</td><td>${esc(c.area || '—')}</td><td>${date(c.createdAt)}</td></tr>`).join(''); $('customerEmpty').classList.toggle('hidden', rows.length > 0); }
+            function renderBusinesses() { const q = ($('businessSearch')?.value || '').toLowerCase(), f = $('businessFilter')?.value || 'all'; const rows = state.businesses.filter(b => [b.businessName, b.ownerName, b.category, b.area, b.mobile, b.pincode].some(v => String(v || '').toLowerCase().includes(q)) && (f === 'all' || String(b.verificationStatus || 'Unverified') === f)); $('businessRows').innerHTML = rows.map(b => `<tr><td><div class="person"><div class="mini-avatar">${esc((b.businessName || 'B').slice(0, 1).toUpperCase())}</div><div><strong>${esc(b.businessName || 'Unnamed')}</strong><div class="muted">${esc(b.city || 'Jaipur')}</div></div></div></td><td>${esc(b.ownerName || '—')}</td><td>${esc(b.category || '—')}</td><td>${esc(b.area || '—')}<div class="muted">${esc(b.pincode || '')}</div></td><td>${esc(b.mobile || '—')}</td><td>${badge(b.shopStatus || 'Open')}</td><td>${badge(b.verificationStatus || 'Unverified')}</td><td><div class="actions"><button class="smallbtn" data-verify="${esc(b._id)}">${b.verificationStatus === 'Verified' ? 'Unverify' : 'Verify'}</button><button class="smallbtn red" data-delete-business="${esc(b._id)}">Delete</button></div></td></tr>`).join(''); $('businessEmpty').classList.toggle('hidden', rows.length > 0); }
+            function renderDeals() { const q = ($('dealSearch')?.value || '').toLowerCase(); const rows = state.deals.filter(d => [d.name, d.shopName, d.category, d.offer].some(v => String(v || '').toLowerCase().includes(q))); $('dealRows').innerHTML = rows.map(d => `<tr><td><div class="person"><div class="mini-avatar"><i data-lucide="badge-percent"></i></div><div><strong>${esc(d.name || 'Untitled deal')}</strong><div class="muted">${esc(d.offer || 'Offer')}</div></div></div></td><td>${esc(d.shopName || '—')}</td><td>${esc(d.category || '—')}</td><td><strong>${money(d.price)}</strong><div class="muted">${Number(d.originalPrice || 0) > 0 ? 'MRP ' + money(d.originalPrice) : ''}</div></td><td>${Number(d.views || 0).toLocaleString('en-IN')}</td><td>${Number(d.claims || 0).toLocaleString('en-IN')}</td><td>${date(d.createdAt)}</td><td><button class="smallbtn red" data-delete-deal="${esc(d._id)}">Delete</button></td></tr>`).join(''); $('dealEmpty').classList.toggle('hidden', rows.length > 0); if (window.lucide) lucide.createIcons(); }
+            function renderAnalytics() { if (!$('analyticsStats')) return; const totalViews = state.deals.reduce((n, d) => n + Number(d.views || 0), 0), totalClaims = state.deals.reduce((n, d) => n + Number(d.claims || 0), 0), verified = state.businesses.filter(b => b.verificationStatus === 'Verified').length, unverified = state.businesses.length - verified; $('analyticsStats').innerHTML = statCard('Recorded deal views', totalViews, 'eye', 'Sum of deal views fields') + statCard('Recorded deal claims', totalClaims, 'ticket-check', 'Sum of deal claims fields') + statCard('Verified businesses', verified, 'badge-check', 'Saved verification status') + statCard('Unverified businesses', unverified, 'shield-alert', 'Saved verification status'); const max = Math.max(1, ...state.deals.map(d => Number(d.views || 0))); $('engagementBars').innerHTML = state.deals.slice().sort((a, b) => Number(b.views || 0) - Number(a.views || 0)).slice(0, 7).map(d => `<div class="barrow"><span title="${esc(d.name)}">${esc((d.name || 'Deal').slice(0, 16))}</span><div class="bartrack"><div class="barfill" style="width:${Math.min(100, Number(d.views || 0) / max * 100)}%"></div></div><b>${Number(d.views || 0)}</b></div>`).join('') || '<div class="empty">No deal records available.</div>'; $('verificationBars').innerHTML = [['Verified', verified, 'green'], ['Unverified', unverified, '']].map(([n, v, c]) => `<div class="barrow"><span>${n}</span><div class="bartrack"><div class="barfill" style="width:${state.businesses.length ? Number(v) / state.businesses.length * 100 : 0}%;${c === 'green' ? 'background:linear-gradient(90deg,#19ad7c,#60cfaa)' : ''}"></div></div><b>${v}</b></div>`).join(''); if (window.lucide) lucide.createIcons(); }
+            document.addEventListener('click', async e => { const v = e.target.closest('[data-verify]'); const db = e.target.closest('[data-delete-business]'); const dd = e.target.closest('[data-delete-deal]'); if (v) { const id = v.dataset.verify; if (!confirm('Change verification status for this GRROX business?')) return; try { await api('/businesses/' + encodeURIComponent(id) + '/verify', { method: 'POST' }); toast('Business verification updated.'); await loadAll(); } catch (err) { toast(err.message) } } if (db) { if (!confirm('Delete this business and its associated deals/customer records? This cannot be undone.')) return; try { await api('/businesses/' + encodeURIComponent(db.dataset.deleteBusiness), { method: 'DELETE' }); toast('Business deleted from GRROX.'); await loadAll(); } catch (err) { toast(err.message) } } if (dd) { if (!confirm('Permanently delete this deal from GRROX?')) return; try { await api('/deals/' + encodeURIComponent(dd.dataset.deleteDeal), { method: 'DELETE' }); toast('Deal deleted from GRROX.'); await loadAll(); } catch (err) { toast(err.message) } } });
+            $('customerSearch').addEventListener('input', renderCustomers); $('businessSearch').addEventListener('input', renderBusinesses); $('businessFilter').addEventListener('change', renderBusinesses); $('dealSearch').addEventListener('input', renderDeals);
+            function csvEscape(v) { const s = String(v == null ? '' : v); return '"' + s.replace(/"/g, '""') + '"'; }
+            function exportCSV(kind) { let rows = []; if (kind === 'customers') { rows = [['Name', 'GRROX ID', 'Mobile', 'Email', 'Area', 'Pincode', 'Created'], ...state.customers.map(c => [c.name, c.grroxId, c.mobile, c.email, c.area, c.pincode, c.createdAt])] } else if (kind === 'businesses') { rows = [['Business', 'Owner', 'Category', 'City', 'Area', 'Pincode', 'Mobile', 'Shop Status', 'Verification', 'Created'], ...state.businesses.map(b => [b.businessName, b.ownerName, b.category, b.city, b.area, b.pincode, b.mobile, b.shopStatus, b.verificationStatus, b.createdAt])] } else { rows = [['Deal', 'Shop', 'Category', 'Price', 'Original Price', 'Views', 'Claims', 'Created'], ...state.deals.map(d => [d.name, d.shopName, d.category, d.price, d.originalPrice, d.views, d.claims, d.createdAt])] }; const blob = new Blob(['\ufeff' + rows.map(r => r.map(csvEscape).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = 'grrox-' + kind + '-' + new Date().toISOString().slice(0, 10) + '.csv'; a.click(); URL.revokeObjectURL(url); }
+            document.querySelectorAll('[data-export]').forEach(b => b.addEventListener('click', () => exportCSV(b.dataset.export)));
+            if (window.lucide) lucide.createIcons();
+            if (token()) { showApp(); loadAll(); }
+        })();
+    </script>
+</body>
+
+</html>
